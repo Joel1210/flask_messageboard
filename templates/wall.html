@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Messageboard Wall</title>
+</head>
+
+<body>
+    <div class="container text-center pd-2 mt-1">
+
+        <div class="row border border-5 align-items-center bg-light" style="height: 70px;">
+            <h3 class="text-left col-md-3 ml-0">CodingDojo Wall</h3>
+
+            <h3 class="text-right col-md-8">Welcome {{ session['firstname'] }} {{ session['lastname'] }}!</h3>
+            <h5><a href="/logout" class="mx-0"> Log Out </a></h5>
+        </div>
+
+
+        <div class="row pt-3">
+
+            <div class="col-6 border-right text-left">
+                <h4 class="mb-2">{{ session['received_message_count'] }} Message(s) for you</h4>
+
+                {% for message_received in messages_received %}
+                <!-- loop through the received messages -->
+                <p class="m-0 mt-1"> {{ message_received['firstname'] }} said ({{ message_received['timediff'] }} ago):</p>
+                <div class="row mb-2">
+                    <div class="col-9 offset-1" style="max-height:50px; overflow-y:auto;"> 
+                        {{ message_received['message_text'] }} 
+                    </div>
+                    <div class="col-2"> 
+                        <a href="/deletemessage/{{ message_received['message_id'] }}" class="btn btn-primary btn-sm  p-1 text-right">delete</a>
+                    </div>
+                </div>
+                <!-- display each user in a form -->
+                {% endfor %}  
+
+            </div>
+
+           
+
+            <div class="col-6 text-left " style="max-height: 700px; overflow: auto; background-color: lightblue">
+                <h4>Send Messages</h4>
+                <p class="text-left mt-1">You have sent {{ session['sent_message_count'] }} messages so far</p>
+
+                {% for user in users %}
+                <!-- loop through the users -->
+
+                <form class="form form-inline mb-2 col-12 " action="/sendmessage" method="post">
+
+                    <div class="form-group row">
+                        <label style="min-width:80px; max-width:80px; display:inline-block" for="msg1" >{{ user['firstname'] }} {{ user['lastname'] }}</label>
+                        <textarea class="form-control col-6  mr-3 ml-1" rows=2 cols=80 id="txt" name="msg"></textarea>
+                        <input type="hidden" value="{{ user['id'] }}" name="user_to">
+                        <input type="submit" value="Send" class="btn btn-primary p-0">
+                    </div>
+
+                </form>
+
+                <!-- display each user in a form -->
+                {% endfor %}    
+
+            </div>
+
+        </div>
+</body>
+
+</html>
